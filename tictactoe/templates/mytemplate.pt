@@ -26,7 +26,12 @@
     </style>
   </head>
   <body>
-    <p>Your move.</p>
+    <tal:if condition="winner">
+      <p>${winner} wins.</p>
+    </tal:if>
+    <tal:if condition="not winner">
+      <p>Your move ${player}.</p>
+    </tal:if>
     <table id="board">
       <tr tal:repeat="row board">
         <td tal:repeat="cell row"><a href="?row=${repeat.row.number}&amp;col=${repeat.cell.number}">${cell}</a></td>
