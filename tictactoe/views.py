@@ -23,7 +23,9 @@ def my_view(request):
                                    ['', '', '']]
 
     board = request.session['game']
-    if request.params.get('row') and request.params.get('col'):
+    winner = get_winner(board)
+    
+    if not winner and request.params.get('row') and request.params.get('col'):
         row = int(request.params.get('row')) - 1
         col = int(request.params.get('col')) - 1
         if not board[row][col]:
