@@ -32,9 +32,10 @@
     <tal:if condition="not winner">
       <p>Your move ${player}.</p>
     </tal:if>
+    <a href="/?game_hash=${game_hash}">http://localhost:6543/?game_hash=${game_hash}</a>
     <table id="board">
       <tr tal:repeat="row board">
-        <td tal:repeat="cell row"><a href="?row=${repeat.row.number}&amp;col=${repeat.cell.number}">${cell}</a></td>
+        <td tal:repeat="cell row"><a href="?row=${repeat.row.number}&amp;col=${repeat.cell.number}&amp;game_hash=${game_hash}">${cell}</a></td>
       </tr>
     </table>
     <p><a href="/">New game</a></p>

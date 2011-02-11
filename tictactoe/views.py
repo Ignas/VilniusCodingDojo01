@@ -1,6 +1,8 @@
+import transaction
+
+from tictactoe.models import DBSession, Game
 
 def get_winner(board):
-
     diagonal1 = [board[i][i] for i in range(3)]
     diagonal2 = [board[2-i][i] for i in range(3)]
     for brd in [board, zip(*board), [diagonal1, diagonal2]]:
@@ -14,30 +16,34 @@ def get_winner(board):
 
 
 def my_view(request):
+    dbsession = DBSession()
 
-    if (not request.session.has_key('game')
-        or not request.params):
-        request.session['move'] = 'X'
-        request.session['game'] = [['', '', ''],
-                                   ['', '', ''],
-                                   ['', '', '']]
+    game_hash = None
+    if "game_hash" not in request.params:
+        game = Game()
+        dbsession.add(game)
+    else:
+        game_hash = request.params.get('game_hash')
+        game = dbsession.query(Game).filter_by(game_hash=game_hash).one()
 
-    board = request.session['game']
+    board = game.board
     winner = get_winner(board)
-    
+
     if not winner and request.params.get('row') and request.params.get('col'):
         row = int(request.params.get('row')) - 1
         col = int(request.params.get('col')) - 1
         if not board[row][col]:
-            board[row][col] = request.session['move']
-            if request.session['move'] == 'X':
-                request.session['move'] = 'O'
+            board[row][col] = game.move
+            if game.move == 'X':
+                game.move = 'O'
             else:
-                request.session['move'] = 'X'
+                game.move = 'X'
+            game.board = board
 
     winner = get_winner(board)
 
-    return {'board': request.session['game'],
+    return {'board': game.board,
             'winner': winner,
-            'player': request.session['move']}
+            'player': game.move,
+            'game_hash': game.game_hash}
 
